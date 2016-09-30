@@ -1,0 +1,31 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+MEMORY = 2048
+BOX = "ubuntu/trusty64"
+NUM_HOSTS = 2
+VAGRANTFILE_API_VERSION = '2'
+HOSTNAME_PREFIX = "cx-host"
+MGMT_HOST = "10.193.231.158:9090"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = BOX
+
+  (0..NUM_HOSTS-1).each do |i|
+    config.vm.define "#{HOSTNAME_PREFIX}#{i}" do |host|
+      host.vm.hostname = "#{HOSTNAME_PREFIX}#{i}"
+
+      host.vm.provider "virtualbox" do |vb, override|
+        vb.name = host.vm.hostname
+        vb.linked_clone = true if Vagrant::VERSION =~ /^1.8/
+        override.vm.network "public_network", "bridge": "enp2s0f0"  
+        vb.memory = MEMORY
+      end
+
+      # Prepare the host to containerX bare metal
+      host.vm.provision "shell", path: "http://#{MGMT_HOST}/pkgs/prepare_host.sh"
+      #host.vm.provision "shell", inline: "reboot"
+
+    end
+  end
+end
