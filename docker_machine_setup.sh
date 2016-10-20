@@ -19,8 +19,8 @@ else
   echo "Docker-machine creation failed!"
 fi
 
-#vboxmanage controlvm cx-mgmt natpf1 cx_http,tcp,10.193.231.158,801,$ip,80
-#vboxmanage controlvm cx-mgmt natpf1 cx_https,tcp,10.193.231.158,4431,$ip,443
+vboxmanage controlvm cx-mgmt natpf1 cx_http,tcp,10.193.231.158,8011,$ip,80
+vboxmanage controlvm cx-mgmt natpf1 cx_https,tcp,10.193.231.158,4431,$ip,443
 
 cx=/home/yuva/cx/src/github.com/containerx/cx
 #python $cx/build/deploy.py deploy
