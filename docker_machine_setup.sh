@@ -20,7 +20,7 @@ else
 fi
 
 vboxmanage controlvm cx-mgmt natpf1 cx_http,tcp,10.193.231.158,8011,$ip,80
-vboxmanage controlvm cx-mgmt natpf1 cx_https,tcp,10.193.231.158,4431,$ip,443
+vboxmanage controlvm cx-mgmt natpf1 cx_https,tcp,10.193.231.158,4432,$ip,443
 vboxmanage controlvm cx-mgmt natpf1 cx-influx1,tcp,10.193.231.158,8083,$ip,8083
 vboxmanage controlvm cx-mgmt natpf1 cx-influx2,tcp,10.193.231.158,8086,$ip,8086
 
