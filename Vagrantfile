@@ -48,9 +48,9 @@ Vagrant.configure("2") do |config|
   #   vb.gui = true
   #
   #   # Customize the amount of memory on the VM:
+     vb.name = "cx-mgmt" # sets the name for virtualbox, VM can be accessed using this name in `vboxmanage`, yay!
      vb.memory = "2048"
-     override.vm.network "public_network", "bridge": "enp2s0f0"
-     vb.name = "cx-mgmt"
+     override.vm.network "public_network", ip: "10.193.231.234", "bridge": "enp2s0f0"
    end
   #
   #config.vm.network "private_network", ip: "192.168.50.4", auto_config: false
@@ -59,7 +59,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: ".hostpubkey"
-  config.vm.provision "file", source: "prepare_mgmt.sh", destination: "prepare_mgmt.sh"
+  config.vm.provision "file", source: "scripts/prepare_mgmt.sh", destination: "prepare_mgmt.sh"
 
   # View the documentation for the provider you are using for more
   # information on available options.

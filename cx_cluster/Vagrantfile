@@ -3,10 +3,10 @@
 
 MEMORY = 2048
 BOX = "ubuntu/trusty64"
-NUM_HOSTS = 2
+NUM_HOSTS = 1
 VAGRANTFILE_API_VERSION = '2'
 HOSTNAME_PREFIX = "cx-host"
-MGMT_HOST = "10.193.231.158:9090"
+MGMT_HOST = "10.193.231.158:8011"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = BOX
@@ -14,18 +14,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   (0..NUM_HOSTS-1).each do |i|
     config.vm.define "#{HOSTNAME_PREFIX}#{i}" do |host|
       host.vm.hostname = "#{HOSTNAME_PREFIX}#{i}"
-
       host.vm.provider "virtualbox" do |vb, override|
-        vb.name = host.vm.hostname
         vb.linked_clone = true if Vagrant::VERSION =~ /^1.8/
-        override.vm.network "public_network", "bridge": "enp2s0f0"  
+        vb.name = host.vm.hostname # sets the name for virtualbox, VM can be accessed using this name in `vboxmanage`, yay!
         vb.memory = MEMORY
+
+        override.vm.network "public_network", ip: "10.193.231.216", bridge: "enp2s0f0" 
       end
 
       # Prepare the host to containerX bare metal
-      host.vm.provision "shell", path: "http://#{MGMT_HOST}/pkgs/prepare_host.sh"
-      #host.vm.provision "shell", inline: "reboot"
+      host.vm.provision "shell", path: "http://#{MGMT_HOST}/pkgs/prepare_host.sh", privileged: true
 
+      host.vm.provision "ssh", type:"file", source:"~/.ssh/authorized_keys", destination: ".server_pub.key"
     end
   end
 end
